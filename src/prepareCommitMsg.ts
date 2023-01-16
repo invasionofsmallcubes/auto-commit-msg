@@ -1,3 +1,12 @@
+import { AGGREGATE_MIN, CONVENTIONAL_TYPE } from "./lib/constants";
+import { namedFilesDesc, oneChange } from "./generate/message";
+
+import { ConvCommitMsg } from "./prepareCommitMsg.d";
+import { MsgPieces } from "./generate/parseExisting.d";
+import axios from "axios";
+import { countFilesDesc } from "./generate/count";
+import { equal } from "./lib/utils";
+import { getConventionType } from "./generate/convCommit";
 /**
  * Prepare commit message.
  *
@@ -11,15 +20,8 @@
  * with text.
  */
 import { lookupDiffIndexAction } from "./generate/action";
-import { getConventionType } from "./generate/convCommit";
-import { countFilesDesc } from "./generate/count";
-import { namedFilesDesc, oneChange } from "./generate/message";
-import { splitMsg } from "./generate/parseExisting";
-import { MsgPieces } from "./generate/parseExisting.d";
 import { parseDiffIndex } from "./git/parseOutput";
-import { AGGREGATE_MIN, CONVENTIONAL_TYPE } from "./lib/constants";
-import { equal } from "./lib/utils";
-import { ConvCommitMsg } from "./prepareCommitMsg.d";
+import { splitMsg } from "./generate/parseExisting";
 
 /**
  * Join two strings together with a space.
@@ -176,13 +178,33 @@ export function _formatMsg(convCommitMsg: ConvCommitMsg) {
 /**
  * Generate a new commit message and format it as a string.
  *
- * @param lines An array of values describing file change from Git output.
- *   e.g. ["A    baz.txt"]
+ * @param diff A string containing a git diff of all changes present
  */
-export function _newMsg(lines: string[]) {
-  const convCommitMsg = _msgFromChanges(lines);
+export async function _newMsg(diff: string): Promise<string> {
+  var data = null
+  const apiKey = ""
+  try {
+  data = await axios({
+    method: "post",
+    url: "https://api.openai.com/v1/completions",
+    headers: {
+      Authorization: "Bearer " + apiKey,
+    },
+    data: {
+      model: "text-davinci-003",
+      prompt: "Describe to what has changed in the following code diff. Try to explain the business logic. Don't list all the functions added: \n\n" + diff,
+      max_tokens: 240,
+      temperature: 0,
+    },
+  });
+  
+  console.debug(data.data)
+} catch (e) {
+  console.debug(e)
+}
 
-  return _formatMsg(convCommitMsg);
+
+  return data!.data.choices[0].text!.trim();
 }
 
 /**
@@ -286,17 +308,19 @@ export function _generateMsgWithOld(lines: string[], oldMsg: string) {
  *
  * A public wrapper function to allow an existing message to be set.
  *
- * @param lines An array of values describing file change from Git output.
- *   e.g. ["A    baz.txt"]
+ * @param diff A string with the entire git diff of all present changes
  * @param oldMsg Existing commit message.This could be the current commit
  *   message value in the UI box (which might be a commit message template that
  *   VS Code has filled in), or a commit message template read from a file in
  *   the case of a hook flow without VS Code.
  */
-export function generateMsg(lines: string[], oldMsg?: string): string {
+export async function generateMsg(
+  diff: string,
+  oldMsg?: string
+): Promise<string> {
   if (!oldMsg) {
-    return _newMsg(lines);
+    return await _newMsg(diff);
   }
 
-  return _generateMsgWithOld(lines, oldMsg);
+  return await _newMsg(diff);
 }

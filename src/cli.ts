@@ -33,9 +33,6 @@ function main(args: string[]) {
   if (!lines.length) {
     throw new Error("No file changes found");
   }
-
-  const msg = generateMsg(lines);
-  console.log(msg);
 }
 
 const args = process.argv.slice(2);

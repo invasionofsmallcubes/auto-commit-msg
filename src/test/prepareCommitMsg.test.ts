@@ -4,10 +4,8 @@
  * Check creation of commit message.
  */
 import * as assert from "assert";
-import { MsgPieces } from "../generate/parseExisting.d";
-import { CONVENTIONAL_TYPE } from "../lib/constants";
+
 import {
-  generateMsg,
   _collapse,
   _combineOldAndNew,
   _formatMsg,
@@ -19,8 +17,12 @@ import {
   _msgNamed,
   _newMsg,
   _prefixFromChange,
+  generateMsg,
 } from "../prepareCommitMsg";
+
+import { CONVENTIONAL_TYPE } from "../lib/constants";
 import { ConvCommitMsg } from "../prepareCommitMsg.d";
+import { MsgPieces } from "../generate/parseExisting.d";
 
 describe("Join strings cleanly", function () {
   describe("#_joinWithSpace", function () {
@@ -703,59 +705,6 @@ describe("Prepare commit message", function () {
         }),
         "docs: update README.md"
       );
-    });
-  });
-
-  describe("#_newMsg", function () {
-    describe("creates a new message from a prefix and message", function () {
-      describe("single change", function () {
-        it("handles a single created file", function () {
-          assert.strictEqual(_newMsg(["A\tbaz.txt"]), "feat: create baz.txt");
-        });
-      });
-
-      describe("multiple changes", function () {
-        // Leave the detailed cases to tests for `_msgFromChanges`.
-        const lines = ["A\tbaz.txt", "A\tbar.js"];
-        const expected = "feat: create baz.txt and bar.js";
-
-        it("handles 2 created files", function () {
-          assert.strictEqual(_newMsg(lines), expected);
-        });
-
-        it("handles 3 created files", function () {
-          const lines = ["A\tbaz.txt", "A\tbar.js", "A\tfizz/fuzz.md"];
-          const expected = "feat: create baz.txt, bar.js and fuzz.md";
-
-          assert.strictEqual(_newMsg(lines), expected);
-        });
-
-        it("handles 3 created docs", function () {
-          {
-            const lines = [
-              "M\tdocs/README.md",
-              "M\tbar/README.md",
-              "M\tREADME.md",
-            ];
-            const expected =
-              "docs: update docs/README.md, bar/README.md and README.md";
-
-            assert.strictEqual(_newMsg(lines), expected);
-          }
-
-          {
-            const lines = [
-              "M\tdocs/fizz buzz.md",
-              "M\tbar/README.md",
-              "M\tREADME.md",
-            ];
-            const expected =
-              "docs: update 'fizz buzz.md', bar/README.md and README.md";
-
-            assert.strictEqual(_newMsg(lines), expected);
-          }
-        });
-      });
     });
   });
 
@@ -1507,28 +1456,6 @@ describe("Prepare commit message", function () {
       const oldMsg = "";
 
       assert.throws(() => _generateMsgWithOld(fileChanges, oldMsg));
-    });
-  });
-
-  describe("#generateMsg", function () {
-    const fileChanges = ["M\tbaz.txt", "M\tbar.js"];
-
-    it("handles a set old message", function () {
-      const oldMsg = "my old message";
-
-      assert.strictEqual(
-        generateMsg(fileChanges, oldMsg),
-        "update baz.txt and bar.js my old message"
-      );
-    });
-
-    it("handles an empty old message", function () {
-      const oldMsg = "";
-
-      assert.strictEqual(
-        generateMsg(fileChanges, oldMsg),
-        "update baz.txt and bar.js"
-      );
     });
   });
 });
