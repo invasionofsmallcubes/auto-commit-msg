@@ -122,10 +122,9 @@ export async function makeAndFillCommitMsg(repository: Repository) {
     return;
   }
 
-  const oldMsg = getCommitMsg(repository);
-  console.debug("Old message: ", oldMsg);
+  //const oldMsg = getCommitMsg(repository);
 
-  const newMsg = await generateMsg(diff, oldMsg);
+  const newMsg = await generateMsg(diff);
   console.debug("New message: ", newMsg);
 
   setCommitMsg(repository, newMsg);

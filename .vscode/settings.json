@@ -17,4 +17,12 @@
   "prettier.tabWidth": 2,
 
   "grammarly.autoActivate": true,
+  "spellright.language": [
+    "en"
+  ],
+  "spellright.documentTypes": [
+    "markdown",
+    "latex",
+    "plaintext"
+  ],
 }

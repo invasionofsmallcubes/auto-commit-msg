@@ -1,13 +1,11 @@
 PUBLISHER_NAME = MichaelCurrin
 
-
 default: install
 
 all: hooks install test build
 
 h help:
 	@grep '^[a-z#]' Makefile
-
 
 .PHONY: hooks
 hooks:
@@ -21,7 +19,6 @@ outdated:
 
 upgrade:
 	npm upgrade
-
 
 fmt:
 	npm run fmt:fix

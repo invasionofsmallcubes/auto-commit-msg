@@ -63,7 +63,7 @@
     "generate",
     "commit",
     "message",
-    "conventional-commit",
+    "chatgpt",
     "vs-code",
     "vscode",
     "productivity"
@@ -99,7 +99,21 @@
           "group": "navigation"
         }
       ]
-    }
+    },
+    "configuration": [
+      {
+        "id": "configurationSamples",
+        "title": "ChatGPT Commit Message",
+        "properties": {
+          "conf.view.apiKey": {
+            "type": "string",
+            "default": "",
+            "description": "Your ChatGPT API key",
+            "scope": "window"
+          }
+        }
+      }
+    ]
   },
   "dependencies": {
     "axios": "^1.2.2"
