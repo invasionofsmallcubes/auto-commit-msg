@@ -5,6 +5,7 @@
  * the `prepareCommitMsg` module to a target branch.
  */
 import * as vscode from "vscode";
+import { DocumentSymbol } from "vscode";
 import { API, Repository } from "./api/git";
 import { makeAndFillCommitMsg } from "./autofill";
 import { getGitExtension } from "./gitExtension";
@@ -83,12 +84,17 @@ async function _chooseRepoForAutofill(sourceControl?: vscode.SourceControl) {
  * and run the autofill logic for a repo.
  */
 export function activate(context: vscode.ExtensionContext) {
-  const disposable = vscode.commands.registerCommand(
-    "commitMsg.autofill",
-    _chooseRepoForAutofill
+  context.subscriptions.push(
+    vscode.commands.registerCommand(
+      "commitMsg.autofill",
+      _chooseRepoForAutofill
+    ),
+    vscode.commands.registerCommand("commitMsg.comment", async () => {
+      vscode.window.showInformationMessage("Hello, friend!");
+      let symbols = await vscode.commands.executeCommand('vscode.executeDocumentSymbolProvider', vscode.window.activeTextEditor?.document.uri) as DocumentSymbol[];
+      console.debug(symbols)
+    })
   );
-
-  context.subscriptions.push(disposable);
 }
 
 // prettier-ignore

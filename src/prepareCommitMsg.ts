@@ -10,7 +10,9 @@ import { workspace } from "vscode";
  */
 export async function generateMsg(diff: string): Promise<string> {
   let data = null;
-  console.debug("Bearer " + workspace.getConfiguration().get("conf.view.apiKey"));
+  console.debug(
+    "Bearer " + workspace.getConfiguration().get("conf.view.apiKey")
+  );
   try {
     data = await axios({
       method: "post",

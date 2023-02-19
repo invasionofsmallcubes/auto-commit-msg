@@ -44,8 +44,8 @@
     "typescript": "^4.7.2",
     "vscode-test": "^1.6.1"
   },
-  "displayName": "Auto Commit Message",
-  "description": "A VS Code extension to generate a smart commit message based on file changes",
+  "displayName": "AI Commit Message",
+  "description": "A VS Code extension to generate a commit message using ChatGTP",
   "publisher": "MichaelCurrin",
   "author": {
     "name": "MichaelCurrin"
@@ -77,18 +77,20 @@
     "color": "#f0efe7",
     "theme": "light"
   },
-  "activationEvents": [
-    "onCommand:commitMsg.autofill"
-  ],
+  "activationEvents": [],
   "contributes": {
     "commands": [
       {
         "command": "commitMsg.autofill",
-        "title": "Auto Commit Message",
+        "title": "ChatGPT: Auto Commit Message",
         "icon": {
           "dark": "images/message.svg",
           "light": "images/message-light.svg"
         }
+      },
+      {
+        "command": "commitMsg.comment",
+        "title": "ChatGPT: Function Comment"
       }
     ],
     "menus": {
